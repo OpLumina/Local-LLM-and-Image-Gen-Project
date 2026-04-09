@@ -7,8 +7,8 @@ from typing import Optional
 
 class Pipe:
     class Valves(BaseModel):
-        wan2gp_url: str = Field(default="http://10.0.0.147:8190")
-        controller_url: str = Field(default="http://10.0.0.147:8189")
+        wan2gp_url: str = Field(default="http://<main-ip>:8190")
+        controller_url: str = Field(default="http://<main-ip>:8189")
         width: int = Field(default=1024)
         height: int = Field(default=1024)
         steps: int = Field(default=4)
