@@ -1,0 +1,33 @@
+FROM nvidia/cuda:12.8.1-devel-ubuntu24.04
+
+# System deps
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip python3-venv git wget \
+    libgl1 libglib2.0-0 libsm6 libxext6 libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Remove the externally-managed restriction so pip works
+RUN rm -f /usr/lib/python3*/EXTERNALLY-MANAGED
+
+# PyTorch 2.7.1 + CUDA 12.8 (correct for RTX 5060 Ti / Blackwell sm_120)
+RUN pip install --no-cache-dir \
+    torch==2.7.1 torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cu128
+
+# Clone Wan2GP
+RUN git clone https://github.com/deepbeepmeep/Wan2GP.git /app
+WORKDIR /app
+
+# Wan2GP dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Flask for our HTTP wrapper
+RUN pip install --no-cache-dir flask
+
+# Copy our API server in
+COPY wan2gp_server.py /app/wan2gp_server.py
+
+# Models will be mounted at /app/ckpts at runtime
+# Outputs will be written to /app/outputs
+
+CMD ["python3", "wan2gp_server.py"]

@@ -1,0 +1,4 @@
+FROM python:3.11-slim
+RUN pip install flask docker requests
+WORKDIR /app
+CMD ["python", "controller.py"]

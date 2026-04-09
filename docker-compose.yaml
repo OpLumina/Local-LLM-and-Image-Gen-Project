@@ -1,0 +1,65 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_NUM_PARALLEL=1
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_KEEP_ALIVE=5m
+      - OLLAMA_FLASH_ATTENTION=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    entrypoint: /bin/sh -c "apt-get update && apt-get install -y libquadmath0 && ollama serve"
+
+  wan2gp:
+    build:
+      context: .
+      dockerfile: Dockerfile.wan2gp
+    container_name: wan2gp
+    restart: "no"
+    profiles:
+      - images
+    ports:
+      - "8190:8190"
+    volumes:
+      # Persist downloaded model checkpoints across container restarts
+      - ./wan2gp/ckpts:/app/ckpts
+      # Persist Wan2GP config
+      - ./wan2gp/config:/app/config
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  wan2gp-controller:
+    build:
+      context: .
+      dockerfile: Dockerfile.controller
+    container_name: wan2gp-controller
+    restart: always
+    ports:
+      - "8189:8189"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./controller.py:/app/controller.py
+    working_dir: /app
+
+volumes:
+  ollama:
+    external: true
