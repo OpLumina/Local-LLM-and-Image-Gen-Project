@@ -3,9 +3,9 @@
 ## Machine Info
 - **Host**: Windows 11 + WSL2 (`DESKTOP-VOT3EHI`)
 - **GPU**: NVIDIA RTX 5060 Ti 16GB (Blackwell, `sm_120`, requires CUDA 12.8+)
-- **IP**: `10.0.0.147`
+- **IP**: `<main-ip>`
 - **Project directory**: `/mnt/c/Users/Palantir/Documents/cdev/local-llm/`
-- **Open WebUI**: Running on a **separate machine** on the LAN at `10.0.0.130:8080`
+- **Open WebUI**: Running on a **separate machine** on the LAN at `<open-webui-ip>:8080`
 
 ---
 
