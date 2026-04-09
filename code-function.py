@@ -6,10 +6,10 @@ from pydantic import BaseModel, Field
 
 class Pipe:
     class Valves(BaseModel):
-        ollama_url: str = Field(default="http://10.0.0.147:11434")
+        ollama_url: str = Field(default="http://<main-ip>:11434")
         ollama_model: str = Field(default="qwen2.5:14b")
-        wan2gp_url: str = Field(default="http://10.0.0.147:8190")
-        controller_url: str = Field(default="http://10.0.0.147:8189")
+        wan2gp_url: str = Field(default="http://<main-ip>:8190")
+        controller_url: str = Field(default="http://<main-ip>:8189")
 
     def __init__(self):
         self.type = "pipe"
